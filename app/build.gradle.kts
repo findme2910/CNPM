@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.calendarproject"
-        minSdk = 16
+        minSdk = 19
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.cardview)
     implementation(libs.recyclerview)
+    implementation("org.projectlombok:lombok:1.18.28")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
