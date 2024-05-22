@@ -37,7 +37,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.cardview)
     implementation(libs.recyclerview)
-    implementation("org.projectlombok:lombok:1.18.28")
+    implementation(libs.lombok)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

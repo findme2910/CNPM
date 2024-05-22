@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="pink">#f7b3b3</color>
     <color name ="green">#19ae8e</color>
+    <color name ="holo">@android:color/holo_green_dark</color>
 </resources>
