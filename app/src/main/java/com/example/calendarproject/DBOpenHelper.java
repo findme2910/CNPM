@@ -14,7 +14,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + DBStructure.TIME + " TEXT, "
             + DBStructure.DATE + " TEXT, "
             + DBStructure.MONTH + " TEXT, "
-            + DBStructure.YEAR + " TEXT)";
+            + DBStructure.YEAR + " TEXT, "
+            + DBStructure.Notify+" TEXT)";
 
     private static final String DROP_EVENTS_TABLE = "DROP TABLE IF EXISTS " + DBStructure.EVENT_TABLE_NAME;
     public DBOpenHelper(@Nullable Context context) {
@@ -32,13 +33,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
     //lưu dữ liệu vào trong database
-    public void SaveEvent(String event, String time, String date, String month, String year,SQLiteDatabase database){
+    public void SaveEvent(String event, String time, String date, String month, String year, String notify,SQLiteDatabase database){
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBStructure.EVENT,event);
         contentValues.put(DBStructure.TIME,time);
         contentValues.put(DBStructure.DATE,date);
         contentValues.put(DBStructure.MONTH,month);
         contentValues.put(DBStructure.YEAR,year);
+        contentValues.put(DBStructure.Notify,notify);
         database.insert(DBStructure.EVENT_TABLE_NAME,null, contentValues);
     }
     // đọc sự kiện theo date
@@ -48,6 +50,21 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         String [] SelectionArgs = {date};
         return database.query(DBStructure.EVENT_TABLE_NAME,Projections,Selection,SelectionArgs,null,null,null);
     }
+
+    /**
+     * tìm kiếm các sự kiện cụ thể trong lịch, thông báo người dùng dựa trên thời gian và sự kiện đã lưu
+     *
+     * @param date Ngày của sự kiện muốn truy vấn.
+     * @param event Tên của sự kiện muốn truy vấn.
+     * @param time Thời gian của sự kiện muốn truy vấn.
+     * */
+    public Cursor ReadIDEvents (String date, String event, String time, SQLiteDatabase database){
+        String [] Projections = {DBStructure.ID,DBStructure.Notify};
+        String Selection = DBStructure.DATE + "=? and "+DBStructure.EVENT+"=? and "+DBStructure.TIME+"=?";
+        String [] SelectionArgs = {date,event,time};
+        return database.query(DBStructure.EVENT_TABLE_NAME,Projections,Selection,SelectionArgs,null,null,null);
+    }
+
     // đọc sự kiện theo tháng năm
     public Cursor ReadventsperMonth (String month,String year, SQLiteDatabase database){
         String [] Projections = {DBStructure.EVENT,DBStructure.TIME,DBStructure.DATE,DBStructure.MONTH,DBStructure.YEAR};
@@ -60,5 +77,21 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         String selection = DBStructure.EVENT + "=? and " + DBStructure.DATE + "=? and " +DBStructure.TIME + "=?";
         String [] selectionArg = {event,date,time};
         database.delete(DBStructure.EVENT_TABLE_NAME,selection,selectionArg);
+    }
+
+    /**
+     * Cập nhật thông báo của sự kiện dựa trên ngày, sự kiện và thời gian.
+     *
+     * @param date Ngày của sự kiện cần cập nhật.
+     * @param event Tên của sự kiện cần cập nhật.
+     * @param time Thời gian của sự kiện cần cập nhật.
+     * @param notify Thông báo mới cần cập nhật cho sự kiện
+     */
+    public void updateEvent(String date, String event, String time, String notify, SQLiteDatabase database){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBStructure.Notify,notify);
+        String Selection = DBStructure.DATE + "=? and "+DBStructure.EVENT+"=? and "+DBStructure.TIME+"=?";
+        String [] SelectionArgs = {date,event,time};
+        database.update(DBStructure.EVENT_TABLE_NAME,contentValues,Selection,SelectionArgs);
     }
 }
