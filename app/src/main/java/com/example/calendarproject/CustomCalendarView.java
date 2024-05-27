@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +20,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -89,20 +91,40 @@ public class CustomCalendarView extends LinearLayout {
                 Calendar calendar = Calendar.getInstance();
                 int hours = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutes = calendar.get(Calendar.MINUTE);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(addView.getContext(), androidx.constraintlayout.widget.R.style.Theme_AppCompat_Dialog
-                        , (view1, hourOfDay, minute) -> {
-                            Calendar c = Calendar.getInstance();
-                            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                            c.set(Calendar.MINUTE, minutes);
-                            c.setTimeZone(TimeZone.getDefault());
-                            SimpleDateFormat hformate = new SimpleDateFormat("K:mm a", Locale.ENGLISH);
-                            String event_Time = hformate.format(c.getTime());
-                            EventTime.setText(event_Time);
-                            alarmHour=c.get(Calendar.HOUR_OF_DAY);
-                            alarmMinute=c.get(Calendar.MINUTE);
-
-                        }, hours, minutes, false);
-                timePickerDialog.show();
+//                TimePickerDialog timePickerDialog = new TimePickerDialog(addView.getContext(), new TimePickerDialog.OnTimeSetListener()
+//                        , (view1, hourOfDay, minute) -> {
+//                            Calendar c = Calendar.getInstance();
+//                            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//                            c.set(Calendar.MINUTE, minutes);
+//                            c.setTimeZone(TimeZone.getDefault());
+//                            SimpleDateFormat hformate = new SimpleDateFormat("K:mm a", Locale.ENGLISH);
+//                            String event_Time = hformate.format(c.getTime());
+//                            EventTime.setText(event_Time);
+//                            alarmHour=c.get(Calendar.HOUR_OF_DAY);
+//                            alarmMinute=c.get(Calendar.MINUTE);
+//
+//                        }, hours, minutes, false);
+//                timePickerDialog.show();
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                        Calendar c = Calendar.getInstance();
+                        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        c.set(Calendar.MINUTE, minutes);
+                        c.setTimeZone(TimeZone.getDefault());
+                        SimpleDateFormat hformate = new SimpleDateFormat("K:mm a", Locale.ENGLISH);
+                        String event_Time = hformate.format(c.getTime());
+                        EventTime.setText(event_Time);
+                        alarmHour=c.get(Calendar.HOUR_OF_DAY);
+                        alarmMinute=c.get(Calendar.MINUTE);
+                    }
+                }, hour, minute, true);//Yes 24 hour time
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
             });
             final String date = eventDateFormate.format(dates.get(position));
             final String month = monthFormat.format(dates.get(position));
